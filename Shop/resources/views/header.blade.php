@@ -4,7 +4,7 @@
             <div class="ht-left">
                 <div class="mail-service">
                     <i class=" fa fa-envelope"></i>
-                    <b >hello.colorlib@gmail.com
+                    <b>hello.colorlib@gmail.com</b>
                 </div>
                 <div class="phone-service">
                     <i class=" fa fa-phone"></i>
@@ -18,12 +18,10 @@
                 </a>
                 <div class="lan-selector">
                     <select class="language_drop" name="countries" id="countries" style="width:300px;">
-                        <option value='yt' data-image="img/flag-1.jpg" data-imagecss="flag yt"
-                            data-title="English">
+                        <option value='yt' data-image="img/flag-1.jpg" data-imagecss="flag yt" data-title="English">
                             English
                         </option>
-                        <option value='yu' data-image="img/flag-2.jpg" data-imagecss="flag yu"
-                            data-title="Bangladesh">
+                        <option value='yu' data-image="img/flag-2.jpg" data-imagecss="flag yu" data-title="Bangladesh">
                             German </option>
                     </select>
                 </div>
@@ -62,50 +60,45 @@
                                 <span>1</span>
                             </a>
                         </li>
-                        <li class="cart-icon"><a href="#">
+                        <li class="cart-icon">
+                            @if(Session::has('cart'))
+                            <a href="#">
                                 <i class="icon_bag_alt"></i>
-                                <span>3</span>
+                                <span>@if(Session::has('cart')){{Session('cart')->totalQty}}@else Trong @endif</span>
+
                             </a>
                             <div class="cart-hover">
                                 <div class="select-items">
                                     <table>
                                         <tbody>
+                                            @foreach($product_cart as $products)
                                             <tr>
-                                                <td class="si-pic"><img src="img/select-product-1.jpg" alt=""></td>
+                                            
+                                                <td id="cart-item{{$products['item']['id']}}" class="si-pic"><img style="width: 100px; height: 100px;" src="{{$products['item']['image']}}" alt=""></td>
                                                 <td class="si-text">
                                                     <div class="product-selected">
-                                                        <p>₫60.00 x 1</p>
-                                                        <h6>Kabino Bedside Table</h6>
+                                                        <p>{{$products['item']['qty']}}*<span>{{$products['item']['unit_price']}}</p>
+                                                        <h6>{{$products['item']['name']}}</h6>
                                                     </div>
                                                 </td>
                                                 <td class="si-close">
-                                                    <i class="ti-close"></i>
+                                                    <a 	 class="cart-item-delete" href="del-cart/{{$products['item']['id']}}" value="{{$products['item']['id']}}" soluong="{{$products['qty']}}"><i class="fa fa-times"></i><img src="source/image/product/{{$products['item']['image']}}" alt=""></a>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td class="si-pic"><img src="img/select-product-2.jpg" alt=""></td>
-                                                <td class="si-text">
-                                                    <div class="product-selected">
-                                                        <p>₫60.00 x 1</p>
-                                                        <h6>Kabino Bedside Table</h6>
-                                                    </div>
-                                                </td>
-                                                <td class="si-close">
-                                                    <i class="ti-close"></i>
-                                                </td>
-                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="select-total">
                                     <span>total:</span>
-                                    <h5>₫120.00</h5>
+                                    <h5>{{number_format(Session('cart')->totalPrice)}} đồng</h5>
                                 </div>
                                 <div class="select-button">
                                     <a href="#" class="primary-btn view-card">VIEW CARD</a>
                                     <a href="#" class="primary-btn checkout-btn">CHECK OUT</a>
                                 </div>
                             </div>
+                            @endif
                         </li>
                     </ul>
                 </div>

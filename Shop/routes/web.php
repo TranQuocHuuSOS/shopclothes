@@ -19,3 +19,5 @@ use App\Http\Controllers\PageController;
 // });
 
 Route::get('/',[PageController::class,'getIndex']);
+Route::get('add-to-cart/{id}', [PageController::class, 'getAddToCart'])->name('themgiohang');
+Route::get('del-cart/{id}', [PageController::class, 'getDelItemCart'])->name('xoagiohang');
