@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 class CartController extends Controller
 {
     //
+   
+
     public function getAddToCart(Request $req, $id)
     {
         if (Session::has('user')) {

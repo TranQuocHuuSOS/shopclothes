@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bills;
+use App\Models\bill_detail;
 use App\Models\Products;
 use App\Models\Carts;
+use App\Models\Users;
+use App\Models\wishlists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 class PageController extends Controller
@@ -45,5 +49,72 @@ class PageController extends Controller
             Session::forget('cart');
         }
         return redirect()->back();
+    }
+
+    public function getCheckout()
+    {
+        if (Session::has('cart')) {
+            $oldCart = Session::get('cart');
+            $cart = new Carts($oldCart);
+            return view('checkout')->with([
+                'cart' => Session::get('cart'),
+                'product_cart' => $cart->items,
+                'totalPrice' => $cart->totalPrice,
+                'totalQty' => $cart->totalQty
+            ]);;
+        } else {
+            return redirect('/');
+        }
+    }
+
+    public function postCheckout(Request $req)
+    {
+        $cart = Session::get('cart');
+        $customer = new Users();
+        $customer->name = $req->full_name;
+        $customer->gender = $req->gender;
+        $customer->email = $req->email;
+        $customer->address = $req->address;
+        $customer->phone_number = $req->phone;
+
+        if (isset($req->notes)) {
+            $customer->note = $req->notes;
+        } else {
+            $customer->note = "Không có ghi chú gì";
+        }
+
+        $customer->save();
+
+        $bill = new Bills();
+        $bill->id_user = $customer->id;
+        $bill->date_order = date('Y-m-d');
+        $bill->total = $cart->totalPrice;
+        $bill->payment = $req->payment_method;
+        if (isset($req->notes)) {
+            $bill->note = $req->notes;
+        } else {
+            $bill->note = "Không có ghi chú gì";
+        }
+        $bill->save();
+
+        foreach ($cart->items as $key => $value) {
+            $bill_detail = new bill_detail();
+            $bill_detail->id_bill = $bill->id;
+            $bill_detail->id_product = $key; //$value['item']['id'];
+            $bill_detail->quantity = $value['qty'];
+            $bill_detail->unit_price = $value['price'] / $value['qty'];
+            $bill_detail->save();
+            return "<script>alert('Đặt hàng thành công!');
+            window.location.href='/'</script>;
+             ";
+        }
+
+        Session::forget('cart');
+        $wishlists = wishlists::where('id_user', Session::get('user')->id)->get();
+        if (isset($wishlists)) {
+            foreach ($wishlists as $element) {
+                $element->delete();
+            }
+        }
     }
 }

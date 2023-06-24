@@ -10,6 +10,8 @@
 	<script src="../../../source/assets/dest/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
 	<script src="../../../source/assets/dest/js/waypoints.min.js"></script>
 	<script src="../../../source/assets/dest/js/wow.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 	<!--customjs-->
 	<script src="assets/dest/js/custom2.js"></script>
 	<script>

@@ -77,7 +77,13 @@
                                                 <td id="cart-item{{$products['item']['id']}}" class="si-pic"><img style="width: 100px; height: 100px;" src="{{$products['item']['image']}}" alt=""></td>
                                                 <td class="si-text">
                                                     <div class="product-selected">
-                                                        <p>{{$products['item']['qty']}}*<span>{{$products['item']['unit_price']}}</p>
+                                                        <div class="quantity-selector">
+                                                            <button class="quantity-minus">-</button>
+                                                            <span class="quantity-value">{{$products['qty']}}</span>
+                                                            <button class="quantity-plus">+</button>
+                                                            * <span>{{$products['item']['price']}} đồng</span>
+                                                        </div>
+                                                        
                                                         <h6>{{$products['item']['name']}}</h6>
                                                     </div>
                                                 </td>
@@ -94,8 +100,8 @@
                                     <h5>{{number_format(Session('cart')->totalPrice)}} đồng</h5>
                                 </div>
                                 <div class="select-button">
-                                    <a href="#" class="primary-btn view-card">VIEW CARD</a>
-                                    <a href="#" class="primary-btn checkout-btn">CHECK OUT</a>
+                                    <a href="/shoping-cart" class="primary-btn view-card">VIEW CARD</a>
+                                    <a href="/check-out" class="primary-btn checkout-btn">CHECK OUT</a>
                                 </div>
                             </div>
                             @endif
@@ -137,3 +143,43 @@
         </div>
     </div>
 </header>
+
+<script>
+    // Lấy tất cả các nút tăng giảm số lượng
+var quantityMinusButtons = document.querySelectorAll('.quantity-minus');
+var quantityPlusButtons = document.querySelectorAll('.quantity-plus');
+
+// Xử lý sự kiện khi nhấn nút tăng giảm số lượng
+quantityMinusButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+        var quantityValue = this.nextElementSibling;
+        var currentQuantity = parseInt(quantityValue.textContent);
+
+        if (currentQuantity > 1) {
+            quantityValue.textContent = currentQuantity - 1;
+            updateTotalPrice(-1, this);
+        }
+    });
+});
+
+quantityPlusButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+        var quantityValue = this.previousElementSibling;
+        var currentQuantity = parseInt(quantityValue.textContent);
+
+        quantityValue.textContent = currentQuantity + 1;
+        updateTotalPrice(1, this);
+    });
+});
+
+// Hàm cập nhật tổng giá
+function updateTotalPrice(quantityChange, button) {
+    var productPrice = parseFloat(button.closest('.si-text').querySelector('.product-selected span').textContent);
+    var totalPriceElement = document.querySelector('.select-total h5');
+    var currentTotalPrice = parseFloat(totalPriceElement.textContent.replace(/[^0-9.-]+/g,""));
+    var newTotalPrice = currentTotalPrice + (quantityChange * productPrice);
+
+    totalPriceElement.textContent = newTotalPrice.toFixed(2) + ' đồng';
+}
+
+</script>
